@@ -35,6 +35,7 @@ class TrafficFeatureEngineer:
         "is_weekend",
         "is_holiday",
         "rolling_avg_24h",
+        "lane_ratio",
     ]
 
     def __init__(self):
@@ -63,6 +64,21 @@ class TrafficFeatureEngineer:
 
         return df
 
+    def _calculate_lane_ratio(self, df: pd.DataFrame, id_col: str = "id") -> pd.DataFrame:
+        """Calculate each lane's share of station traffic for the timestamp."""
+        if "lane_ratio" in df.columns:
+            return df
+
+        if "kanal" in df.columns and "aeg" in df.columns:
+            station_total = df.groupby([id_col, "aeg"])["total_vehicles"].transform("sum")
+            df["lane_ratio"] = np.where(
+                station_total > 0, df["total_vehicles"] / station_total, 0.0
+            )
+        else:
+            df["lane_ratio"] = 1.0
+
+        return df
+
     def _impute_missing_values(self, df: pd.DataFrame) -> pd.DataFrame:
         """Impute missing values in features.
 
@@ -85,6 +101,25 @@ class TrafficFeatureEngineer:
 
         return df
 
+    def _add_temporal_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add time-derived features when preprocessing has not already done it."""
+        if "aeg" not in df.columns:
+            return df
+
+        df["aeg"] = pd.to_datetime(df["aeg"])
+        if "hour" not in df.columns:
+            df["hour"] = df["aeg"].dt.hour
+        if "day_of_week" not in df.columns:
+            df["day_of_week"] = df["aeg"].dt.dayofweek
+        if "date" not in df.columns:
+            df["date"] = df["aeg"].dt.date
+        if "is_weekend" not in df.columns:
+            df["is_weekend"] = df["day_of_week"].isin([5, 6])
+        if "is_holiday" not in df.columns:
+            df["is_holiday"] = False
+
+        return df
+
     def engineer_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """Engineer features from preprocessed traffic data.
 
@@ -95,6 +130,7 @@ class TrafficFeatureEngineer:
             DataFrame with engineered features
         """
         df = df.copy()
+        df = self._add_temporal_features(df)
 
         # Calculate total vehicles (if not already present)
         if "total_vehicles" not in df.columns:
@@ -133,6 +169,9 @@ class TrafficFeatureEngineer:
 
         # Calculate rolling average
         df = self._calculate_rolling_avg(df)
+
+        # Calculate lane share within each station and timestamp
+        df = self._calculate_lane_ratio(df)
 
         # Impute missing values
         df = self._impute_missing_values(df)

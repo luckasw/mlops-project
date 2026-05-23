@@ -41,21 +41,28 @@ def retrain():
 def monitor():
     """Run drift monitoring."""
     import datetime
+    import json
+    from pathlib import Path
 
     from src.data.loader import TrafficDataLoader
-    from src.features.engineer import TrafficFeatureEngineer
     from src.monitoring.drift import TrafficDriftDetector
 
-    # Load reference data (2018-2023)
     loader = TrafficDataLoader()
-    ref_df = loader.load_years([2018, 2019, 2020, 2021, 2022, 2023])
+    processed_path = Path("data/processed/traffic_data_processed.parquet")
+    if processed_path.exists():
+        df = loader.load_parquet(processed_path)
+    else:
+        from src.data.preprocessor import TrafficDataPreprocessor
+        from src.features.engineer import TrafficFeatureEngineer
 
-    engineer = TrafficFeatureEngineer()
-    ref_df = engineer.engineer_features(ref_df)
+        raw_df = loader.load_years([2018, 2019, 2020, 2021, 2022, 2023, 2025])
+        preprocessor = TrafficDataPreprocessor()
+        engineer = TrafficFeatureEngineer()
+        df = engineer.engineer_features(preprocessor.preprocess(raw_df))
 
-    # Load current data (2025)
-    curr_df = loader.load_years([2025])
-    curr_df = engineer.engineer_features(curr_df)
+    # Compare historical reference data against current validation-period data.
+    ref_df = df[df["year"].isin([2018, 2019, 2020, 2021, 2022, 2023])].copy()
+    curr_df = df[df["year"].isin([2025])].copy()
 
     # Define features
     features = [
@@ -77,6 +84,10 @@ def monitor():
     print("Drift Detection Results:")
     for key, value in drift_results.items():
         print(f"  {key}: {value}")
+
+    metrics_path = Path("metrics.json")
+    metrics_path.write_text(json.dumps(drift_results, indent=2), encoding="utf-8")
+    print(f"Metrics saved to: {metrics_path}")
 
 
 def preprocess():

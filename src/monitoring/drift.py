@@ -4,7 +4,6 @@ import datetime
 from pathlib import Path
 from typing import Optional, Union
 
-import numpy as np
 import pandas as pd
 
 
@@ -30,7 +29,7 @@ class TrafficDriftDetector:
             return evidently
         except ImportError:
             raise ImportError(
-                "Evidently AI is required for drift detection. Install it with: uv add evidently"
+                "Evidently AI is required for drift detection. Install it with: pip install evidently"
             )
 
     def detect_drift(
@@ -51,11 +50,9 @@ class TrafficDriftDetector:
         Returns:
             Dictionary with drift detection results
         """
-        evidently = self._try_import_evidently()
-        from evidently import Calculator, ColumnMapping
-        from evidently.calculations.data_drift import DataDriftCalculator
-        from evidently.metrics import *
-        from evidently.report import Report
+        self._try_import_evidently()
+        from evidently import DataDefinition, Dataset, Report
+        from evidently.presets import DataDriftPreset
 
         timestamp = timestamp or datetime.datetime.now()
         timestamp_str = timestamp.strftime("%Y%m%d_%H%M%S")
@@ -64,31 +61,44 @@ class TrafficDriftDetector:
         reference = reference_data[features].copy()
         current = current_data[features].copy()
 
-        # Create column mapping
-        column_mapping = ColumnMapping()
+        numerical_features = []
+        categorical_features = []
         for feat in features:
-            if feat in ["hour", "day_of_week"]:
-                column_mapping.categorical_features = [feat]
-            elif feat in ["is_weekend", "is_holiday"]:
-                column_mapping.categorical_features.append(feat)
+            if feat in ["hour", "day_of_week", "is_weekend", "is_holiday"]:
+                categorical_features.append(feat)
             else:
-                column_mapping.numerical_features = column_mapping.numerical_features or []
-                column_mapping.numerical_features.append(feat)
+                numerical_features.append(feat)
 
-        # Create report
-        report = Report(
-            metrics=[
-                DataDriftCalculator(),
-            ]
+        for feat in numerical_features:
+            reference[feat] = pd.to_numeric(reference[feat], errors="coerce").astype("float64")
+            current[feat] = pd.to_numeric(current[feat], errors="coerce").astype("float64")
+
+        for feat in categorical_features:
+            reference[feat] = reference[feat].astype("string").fillna("missing")
+            current[feat] = current[feat].astype("string").fillna("missing")
+
+        reference = reference.replace([float("inf"), float("-inf")], float("nan")).dropna(
+            subset=numerical_features
+        )
+        current = current.replace([float("inf"), float("-inf")], float("nan")).dropna(
+            subset=numerical_features
         )
 
-        report.run(reference_data=reference, current_data=current, column_mapping=column_mapping)
+        data_definition = DataDefinition(
+            numerical_columns=numerical_features,
+            categorical_columns=categorical_features,
+        )
+        reference_dataset = Dataset.from_pandas(reference, data_definition)
+        current_dataset = Dataset.from_pandas(current, data_definition)
 
-        result = report.as_dict()
+        # Create report
+        report = Report([DataDriftPreset(columns=features)])
+        snapshot = report.run(current_dataset, reference_dataset, timestamp=timestamp)
+        result = snapshot.dict()
 
         # Save report
         report_path = self.report_dir / f"drift_report_{timestamp_str}.html"
-        report.save_html(report_path)
+        snapshot.save_html(str(report_path))
 
         # Extract key metrics
         drift_metrics = {
@@ -97,20 +107,28 @@ class TrafficDriftDetector:
             "n_features": len(features),
             "n_drifted_features": 0,
             "max_drift_score": 0.0,
+            "drift_share": 0.0,
+            "feature_drift_scores": {},
         }
 
-        # Try to extract drift information
-        try:
-            if result and "metrics" in result:
-                for metric in result["metrics"]:
-                    if metric.get("metric_name") == "DataDriftCalculator":
-                        data = metric.get("result", {})
-                        drift_metrics["n_drifted_features"] = data.get(
-                            "number_of_drifted_features", 0
-                        )
-                        drift_metrics["max_drift_score"] = data.get("max_drift_score", 0.0)
-        except Exception as e:
-            print(f"Error extracting drift metrics: {e}")
+        for metric in result.get("metrics", []):
+            config = metric.get("config", {})
+            value = metric.get("value")
+            metric_type = config.get("type", "")
+
+            if metric_type.endswith("DriftedColumnsCount") and isinstance(value, dict):
+                drift_metrics["n_drifted_features"] = int(value.get("count", 0))
+                drift_metrics["drift_share"] = float(value.get("share", 0.0))
+                continue
+
+            if metric_type.endswith("ValueDrift"):
+                column = config.get("column")
+                if column is not None and value is not None:
+                    drift_score = float(value)
+                    drift_metrics["feature_drift_scores"][column] = drift_score
+                    drift_metrics["max_drift_score"] = max(
+                        drift_metrics["max_drift_score"], drift_score
+                    )
 
         return drift_metrics
 

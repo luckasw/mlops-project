@@ -39,6 +39,7 @@ ENV/
 *.csv
 *.xlsx
 *.json
+!metrics.json
 /data/**
 !/data/
 !/data/**/
@@ -65,6 +66,8 @@ ENV/
 # MLflow
 mlflow.db
 mlflow-artifacts/
+mlruns/
+features.txt
 
 # Prefect
 .prefect/

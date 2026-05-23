@@ -1,0 +1,126 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python main.py preprocess
+    deps:
+    - path: data/ll_2018.csv
+      hash: md5
+      md5: ee1ff09c5963c280e84a7a3fe909184e
+      size: 7028813
+    - path: data/ll_2019.csv
+      hash: md5
+      md5: 6e76fdc29f76eabd19a480c173e2e670
+      size: 40547526
+    - path: data/ll_2020.csv
+      hash: md5
+      md5: 2e004dccd708d0c0f1dafbee6ed1674c
+      size: 97923037
+    - path: data/ll_2021.csv
+      hash: md5
+      md5: bcd18f19870f494ee6689c61345787bc
+      size: 172979993
+    - path: data/ll_2022.csv
+      hash: md5
+      md5: 93cf2f92318ec426fe9b0241232df1d0
+      size: 169679780
+    - path: data/ll_2023.csv
+      hash: md5
+      md5: a7d4f6a153a6182c5196349fcc37e2d5
+      size: 174224594
+    - path: data/ll_2024.csv
+      hash: md5
+      md5: 3df3a469245d5cae1d117a7dde461623
+      size: 184045960
+    - path: data/ll_2025.csv
+      hash: md5
+      md5: 75c2a11f7b5f110259c6798279bb1749
+      size: 165053783
+    - path: data/ll_2026.csv
+      hash: md5
+      md5: f8cb1e7d4292670aaef61313b1992bda
+      size: 51165004
+    - path: main.py
+      hash: md5
+      md5: 76dc0c15a4e79ae014569ed8b2869f7e
+      size: 3654
+    - path: src/data
+      hash: md5
+      md5: eaa403b64110b33d1715661cf07617b9.dir
+      size: 13071
+      nfiles: 3
+    - path: src/features
+      hash: md5
+      md5: a7a72c654d2f1bb3466ecc4cc04de3e0.dir
+      size: 7088
+      nfiles: 2
+    outs:
+    - path: data/processed/traffic_data_processed.parquet
+      hash: md5
+      md5: f2f2dc5faa06d744b690a09d4e3cc642
+      size: 477277636
+  train:
+    cmd: python main.py train
+    deps:
+    - path: data/processed/traffic_data_processed.parquet
+      hash: md5
+      md5: f2f2dc5faa06d744b690a09d4e3cc642
+      size: 477277636
+    - path: main.py
+      hash: md5
+      md5: 76dc0c15a4e79ae014569ed8b2869f7e
+      size: 3654
+    - path: src/data
+      hash: md5
+      md5: eaa403b64110b33d1715661cf07617b9.dir
+      size: 13071
+      nfiles: 3
+    - path: src/features
+      hash: md5
+      md5: a7a72c654d2f1bb3466ecc4cc04de3e0.dir
+      size: 7088
+      nfiles: 2
+    - path: src/flows
+      hash: md5
+      md5: c15ac6bbacc9f5ff54134196edbe8bbc.dir
+      size: 6424
+      nfiles: 2
+    - path: src/models
+      hash: md5
+      md5: 701da3a0fe8f34ec5fcb972c49f82ac2.dir
+      size: 6721
+      nfiles: 2
+    outs:
+    - path: models/isolation_forest.pkl
+      hash: md5
+      md5: 9f52d2a19eeb15b1aaa1d9e023c0c617
+      size: 1523610
+  evaluate:
+    cmd: python main.py monitor
+    deps:
+    - path: data/processed/traffic_data_processed.parquet
+      hash: md5
+      md5: f2f2dc5faa06d744b690a09d4e3cc642
+      size: 477277636
+    - path: main.py
+      hash: md5
+      md5: 76dc0c15a4e79ae014569ed8b2869f7e
+      size: 3654
+    - path: models/isolation_forest.pkl
+      hash: md5
+      md5: 9f52d2a19eeb15b1aaa1d9e023c0c617
+      size: 1523610
+    - path: src/data
+      hash: md5
+      md5: eaa403b64110b33d1715661cf07617b9.dir
+      size: 13071
+      nfiles: 3
+    - path: src/monitoring
+      hash: md5
+      md5: fe8c9807bb8d2e6d944cf783fd8bbf3a.dir
+      size: 7335
+      nfiles: 2
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: fe236c61787cf47c1ab7a047d6f77ba6
+      size: 643

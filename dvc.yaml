@@ -1,8 +1,10 @@
 stages:
   prepare:
-    cmd: uv run python main.py preprocess
+    cmd: python main.py preprocess
     deps:
-      - src
+      - main.py
+      - src/data
+      - src/features
       - data/ll_2018.csv
       - data/ll_2019.csv
       - data/ll_2020.csv
@@ -16,17 +18,23 @@ stages:
       - data/processed/traffic_data_processed.parquet
 
   train:
-    cmd: uv run python main.py train
+    cmd: python main.py train
     deps:
-      - src
+      - main.py
+      - src/data
+      - src/features
+      - src/flows
+      - src/models
       - data/processed/traffic_data_processed.parquet
     outs:
       - models/isolation_forest.pkl
 
   evaluate:
-    cmd: uv run python main.py monitor
+    cmd: python main.py monitor
     deps:
-      - src
+      - main.py
+      - src/data
+      - src/monitoring
       - data/processed/traffic_data_processed.parquet
       - models/isolation_forest.pkl
     metrics:

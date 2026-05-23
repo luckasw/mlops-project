@@ -1,0 +1,34 @@
+stages:
+  prepare:
+    cmd: uv run python main.py preprocess
+    deps:
+      - src
+      - data/ll_2018.csv
+      - data/ll_2019.csv
+      - data/ll_2020.csv
+      - data/ll_2021.csv
+      - data/ll_2022.csv
+      - data/ll_2023.csv
+      - data/ll_2024.csv
+      - data/ll_2025.csv
+      - data/ll_2026.csv
+    outs:
+      - data/processed/traffic_data_processed.parquet
+
+  train:
+    cmd: uv run python main.py train
+    deps:
+      - src
+      - data/processed/traffic_data_processed.parquet
+    outs:
+      - models/isolation_forest.pkl
+
+  evaluate:
+    cmd: uv run python main.py monitor
+    deps:
+      - src
+      - data/processed/traffic_data_processed.parquet
+      - models/isolation_forest.pkl
+    metrics:
+      - metrics.json:
+          cache: false

@@ -1,0 +1,689 @@
+/home/wihler/proj/mlops-project/analyze_data.py:12: SyntaxWarning: invalid escape sequence '\d'
+  YEAR_PATTERN = "ll_(\d{4}).csv"
+/home/wihler/proj/mlops-project/analyze_data.py:36: DtypeWarning: Columns (0: id) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+/home/wihler/proj/mlops-project/analyze_data.py:36: DtypeWarning: Columns (0: id) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+/home/wihler/proj/mlops-project/analyze_data.py:36: DtypeWarning: Columns (0: id) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+/home/wihler/proj/mlops-project/analyze_data.py:36: DtypeWarning: Columns (0: id) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+/home/wihler/proj/mlops-project/analyze_data.py:36: DtypeWarning: Columns (0: id) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+/home/wihler/proj/mlops-project/analyze_data.py:36: DtypeWarning: Columns (0: id) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+Loading data...
+Loaded 9 datasets
+
+================================================================================
+STRUCTURE ANALYSIS
+================================================================================
+
+2018:
+  Rows: 91,296
+  Columns: 24
+  Memory: 21.93 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2019:
+  Rows: 526,802
+  Columns: 24
+  Memory: 108.52 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2020:
+  Rows: 1,294,200
+  Columns: 24
+  Memory: 266.60 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2021:
+  Rows: 2,295,190
+  Columns: 24
+  Memory: 561.41 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2022:
+  Rows: 2,252,484
+  Columns: 24
+  Memory: 549.82 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2023:
+  Rows: 2,308,696
+  Columns: 24
+  Memory: 564.72 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2024:
+  Rows: 2,436,564
+  Columns: 24
+  Memory: 596.06 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2025:
+  Rows: 2,189,654
+  Columns: 24
+  Memory: 536.11 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+2026:
+  Rows: 681,600
+  Columns: 24
+  Memory: 140.41 MB
+  Columns: ['id', 'kanal', 'aeg', '1', '2', '3', '4', '5', '6', '7']...['90-<100', '100-<110', '110-<120', '120-<130', '=>130']
+
+================================================================================
+MISSING DATA ANALYSIS
+================================================================================
+
+2018:
+  Total missing cells: 0 (0.0000%)
+  No missing data
+  Rows with at least one missing value: 0
+
+2019:
+  Total missing cells: 0 (0.0000%)
+  No missing data
+  Rows with at least one missing value: 0
+
+2020:
+  Total missing cells: 0 (0.0000%)
+  No missing data
+  Rows with at least one missing value: 0
+
+2021:
+  Total missing cells: 0 (0.0000%)
+  No missing data
+  Rows with at least one missing value: 0
+
+2022:
+  Total missing cells: 0 (0.0000%)
+  No missing data
+  Rows with at least one missing value: 0
+
+2023:
+  Total missing cells: 0 (0.0000%)
+  No missing data
+  Rows with at least one missing value: 0
+
+2024:
+  Total missing cells: 22,176 (0.0379%)
+  Columns with missing data:
+    <40Kph: 2,016 (0.0827%)
+    40-<50: 2,016 (0.0827%)
+    50-<60: 2,016 (0.0827%)
+    60-<70: 2,016 (0.0827%)
+    70-<80: 2,016 (0.0827%)
+    80-<90: 2,016 (0.0827%)
+    90-<100: 2,016 (0.0827%)
+    100-<110: 2,016 (0.0827%)
+    110-<120: 2,016 (0.0827%)
+    120-<130: 2,016 (0.0827%)
+    =>130: 2,016 (0.0827%)
+  Rows with at least one missing value: 2,016
+
+2025:
+  Total missing cells: 217,140 (0.4132%)
+  Columns with missing data:
+    <40Kph: 19,740 (0.9015%)
+    40-<50: 19,740 (0.9015%)
+    50-<60: 19,740 (0.9015%)
+    60-<70: 19,740 (0.9015%)
+    70-<80: 19,740 (0.9015%)
+    80-<90: 19,740 (0.9015%)
+    90-<100: 19,740 (0.9015%)
+    100-<110: 19,740 (0.9015%)
+    110-<120: 19,740 (0.9015%)
+    120-<130: 19,740 (0.9015%)
+    =>130: 19,740 (0.9015%)
+  Rows with at least one missing value: 19,740
+
+2026:
+  Total missing cells: 57,002 (0.3485%)
+  Columns with missing data:
+    <40Kph: 5,182 (0.7603%)
+    40-<50: 5,182 (0.7603%)
+    50-<60: 5,182 (0.7603%)
+    60-<70: 5,182 (0.7603%)
+    70-<80: 5,182 (0.7603%)
+    80-<90: 5,182 (0.7603%)
+    90-<100: 5,182 (0.7603%)
+    100-<110: 5,182 (0.7603%)
+    110-<120: 5,182 (0.7603%)
+    120-<130: 5,182 (0.7603%)
+    =>130: 5,182 (0.7603%)
+  Rows with at least one missing value: 5,182
+
+================================================================================
+VEHICLE TYPE DATA ANALYSIS
+================================================================================
+
+2018:
+  Vehicle 1: 30,309 non-zero entries (33.20%)
+  Vehicle 2: 89,464 non-zero entries (97.99%)
+  Vehicle 3: 55,800 non-zero entries (61.12%)
+  Vehicle 4: 83,120 non-zero entries (91.04%)
+  Vehicle 5: 14,779 non-zero entries (16.19%)
+  Vehicle 6: 53,137 non-zero entries (58.20%)
+  Vehicle 7: 42,096 non-zero entries (46.11%)
+  Vehicle 8: 56,944 non-zero entries (62.37%)
+  Vehicle 9: 23,835 non-zero entries (26.11%)
+  Vehicle 10: 51,333 non-zero entries (56.23%)
+
+2019:
+  Vehicle 1: 203,216 non-zero entries (38.58%)
+  Vehicle 2: 517,041 non-zero entries (98.15%)
+  Vehicle 3: 339,858 non-zero entries (64.51%)
+  Vehicle 4: 484,840 non-zero entries (92.03%)
+  Vehicle 5: 98,096 non-zero entries (18.62%)
+  Vehicle 6: 364,934 non-zero entries (69.27%)
+  Vehicle 7: 330,477 non-zero entries (62.73%)
+  Vehicle 8: 421,596 non-zero entries (80.03%)
+  Vehicle 9: 150,886 non-zero entries (28.64%)
+  Vehicle 10: 303,470 non-zero entries (57.61%)
+
+2020:
+  Vehicle 1: 406,236 non-zero entries (31.39%)
+  Vehicle 2: 1,232,165 non-zero entries (95.21%)
+  Vehicle 3: 747,662 non-zero entries (57.77%)
+  Vehicle 4: 1,105,892 non-zero entries (85.45%)
+  Vehicle 5: 169,351 non-zero entries (13.09%)
+  Vehicle 6: 764,842 non-zero entries (59.10%)
+  Vehicle 7: 664,127 non-zero entries (51.32%)
+  Vehicle 8: 870,542 non-zero entries (67.26%)
+  Vehicle 9: 326,984 non-zero entries (25.27%)
+  Vehicle 10: 538,305 non-zero entries (41.59%)
+
+2021:
+  Vehicle 1: 652,449 non-zero entries (28.43%)
+  Vehicle 2: 2,164,388 non-zero entries (94.30%)
+  Vehicle 3: 1,272,462 non-zero entries (55.44%)
+  Vehicle 4: 1,921,332 non-zero entries (83.71%)
+  Vehicle 5: 286,463 non-zero entries (12.48%)
+  Vehicle 6: 1,282,692 non-zero entries (55.89%)
+  Vehicle 7: 1,101,599 non-zero entries (48.00%)
+  Vehicle 8: 1,456,352 non-zero entries (63.45%)
+  Vehicle 9: 572,174 non-zero entries (24.93%)
+  Vehicle 10: 894,409 non-zero entries (38.97%)
+
+2022:
+  Vehicle 1: 596,236 non-zero entries (26.47%)
+  Vehicle 2: 2,114,004 non-zero entries (93.85%)
+  Vehicle 3: 1,232,850 non-zero entries (54.73%)
+  Vehicle 4: 1,884,826 non-zero entries (83.68%)
+  Vehicle 5: 266,073 non-zero entries (11.81%)
+  Vehicle 6: 1,223,417 non-zero entries (54.31%)
+  Vehicle 7: 1,052,052 non-zero entries (46.71%)
+  Vehicle 8: 1,405,676 non-zero entries (62.41%)
+  Vehicle 9: 607,571 non-zero entries (26.97%)
+  Vehicle 10: 919,694 non-zero entries (40.83%)
+
+2023:
+  Vehicle 1: 626,788 non-zero entries (27.15%)
+  Vehicle 2: 2,193,272 non-zero entries (95.00%)
+  Vehicle 3: 1,292,598 non-zero entries (55.99%)
+  Vehicle 4: 1,955,181 non-zero entries (84.69%)
+  Vehicle 5: 260,331 non-zero entries (11.28%)
+  Vehicle 6: 1,244,336 non-zero entries (53.90%)
+  Vehicle 7: 1,072,744 non-zero entries (46.47%)
+  Vehicle 8: 1,420,186 non-zero entries (61.51%)
+  Vehicle 9: 619,076 non-zero entries (26.81%)
+  Vehicle 10: 963,449 non-zero entries (41.73%)
+
+2024:
+  Vehicle 1: 678,023 non-zero entries (27.83%)
+  Vehicle 2: 2,336,873 non-zero entries (95.91%)
+  Vehicle 3: 1,376,860 non-zero entries (56.51%)
+  Vehicle 4: 2,078,437 non-zero entries (85.30%)
+  Vehicle 5: 287,312 non-zero entries (11.79%)
+  Vehicle 6: 1,310,060 non-zero entries (53.77%)
+  Vehicle 7: 1,141,605 non-zero entries (46.85%)
+  Vehicle 8: 1,501,761 non-zero entries (61.63%)
+  Vehicle 9: 656,614 non-zero entries (26.95%)
+  Vehicle 10: 1,028,683 non-zero entries (42.22%)
+
+2025:
+  Vehicle 1: 533,828 non-zero entries (24.38%)
+  Vehicle 2: 2,057,137 non-zero entries (93.95%)
+  Vehicle 3: 1,214,852 non-zero entries (55.48%)
+  Vehicle 4: 1,819,360 non-zero entries (83.09%)
+  Vehicle 5: 228,282 non-zero entries (10.43%)
+  Vehicle 6: 1,133,763 non-zero entries (51.78%)
+  Vehicle 7: 975,167 non-zero entries (44.54%)
+  Vehicle 8: 1,297,770 non-zero entries (59.27%)
+  Vehicle 9: 591,276 non-zero entries (27.00%)
+  Vehicle 10: 909,131 non-zero entries (41.52%)
+
+2026:
+  Vehicle 1: 85,774 non-zero entries (12.58%)
+  Vehicle 2: 620,376 non-zero entries (91.02%)
+  Vehicle 3: 339,150 non-zero entries (49.76%)
+  Vehicle 4: 538,586 non-zero entries (79.02%)
+  Vehicle 5: 58,550 non-zero entries (8.59%)
+  Vehicle 6: 333,857 non-zero entries (48.98%)
+  Vehicle 7: 297,972 non-zero entries (43.72%)
+  Vehicle 8: 395,773 non-zero entries (58.07%)
+  Vehicle 9: 176,373 non-zero entries (25.88%)
+  Vehicle 10: 276,152 non-zero entries (40.52%)
+
+================================================================================
+SPEED RANGE DATA ANALYSIS
+================================================================================
+
+2018:
+  Speed <40Kph: 13,517 non-zero entries (14.81%)
+  Speed 40-<50: 11,912 non-zero entries (13.05%)
+  Speed 50-<60: 28,170 non-zero entries (30.86%)
+  Speed 60-<70: 47,789 non-zero entries (52.35%)
+  Speed 70-<80: 64,750 non-zero entries (70.92%)
+  Speed 80-<90: 79,539 non-zero entries (87.12%)
+  Speed 90-<100: 80,838 non-zero entries (88.54%)
+  Speed 100-<110: 71,697 non-zero entries (78.53%)
+  Speed 110-<120: 60,635 non-zero entries (66.42%)
+  Speed 120-<130: 40,908 non-zero entries (44.81%)
+  Speed =>130: 29,424 non-zero entries (32.23%)
+
+2019:
+  Speed <40Kph: 59,192 non-zero entries (11.24%)
+  Speed 40-<50: 69,074 non-zero entries (13.11%)
+  Speed 50-<60: 143,038 non-zero entries (27.15%)
+  Speed 60-<70: 283,837 non-zero entries (53.88%)
+  Speed 70-<80: 421,144 non-zero entries (79.94%)
+  Speed 80-<90: 482,874 non-zero entries (91.66%)
+  Speed 90-<100: 483,234 non-zero entries (91.73%)
+  Speed 100-<110: 420,687 non-zero entries (79.86%)
+  Speed 110-<120: 330,434 non-zero entries (62.72%)
+  Speed 120-<130: 210,995 non-zero entries (40.05%)
+  Speed =>130: 152,869 non-zero entries (29.02%)
+
+2020:
+  Speed <40Kph: 178,798 non-zero entries (13.82%)
+  Speed 40-<50: 240,809 non-zero entries (18.61%)
+  Speed 50-<60: 377,295 non-zero entries (29.15%)
+  Speed 60-<70: 631,096 non-zero entries (48.76%)
+  Speed 70-<80: 930,188 non-zero entries (71.87%)
+  Speed 80-<90: 1,051,945 non-zero entries (81.28%)
+  Speed 90-<100: 1,033,382 non-zero entries (79.85%)
+  Speed 100-<110: 898,039 non-zero entries (69.39%)
+  Speed 110-<120: 679,999 non-zero entries (52.54%)
+  Speed 120-<130: 411,095 non-zero entries (31.76%)
+  Speed =>130: 291,827 non-zero entries (22.55%)
+
+2021:
+  Speed <40Kph: 320,791 non-zero entries (13.98%)
+  Speed 40-<50: 446,155 non-zero entries (19.44%)
+  Speed 50-<60: 716,503 non-zero entries (31.22%)
+  Speed 60-<70: 1,148,497 non-zero entries (50.04%)
+  Speed 70-<80: 1,636,536 non-zero entries (71.30%)
+  Speed 80-<90: 1,845,276 non-zero entries (80.40%)
+  Speed 90-<100: 1,799,922 non-zero entries (78.42%)
+  Speed 100-<110: 1,553,143 non-zero entries (67.67%)
+  Speed 110-<120: 1,153,371 non-zero entries (50.25%)
+  Speed 120-<130: 683,012 non-zero entries (29.76%)
+  Speed =>130: 491,925 non-zero entries (21.43%)
+
+2022:
+  Speed <40Kph: 322,170 non-zero entries (14.30%)
+  Speed 40-<50: 456,758 non-zero entries (20.28%)
+  Speed 50-<60: 722,359 non-zero entries (32.07%)
+  Speed 60-<70: 1,141,901 non-zero entries (50.70%)
+  Speed 70-<80: 1,594,983 non-zero entries (70.81%)
+  Speed 80-<90: 1,771,807 non-zero entries (78.66%)
+  Speed 90-<100: 1,730,182 non-zero entries (76.81%)
+  Speed 100-<110: 1,493,509 non-zero entries (66.30%)
+  Speed 110-<120: 1,123,069 non-zero entries (49.86%)
+  Speed 120-<130: 678,045 non-zero entries (30.10%)
+  Speed =>130: 497,499 non-zero entries (22.09%)
+
+2023:
+  Speed <40Kph: 331,462 non-zero entries (14.36%)
+  Speed 40-<50: 469,467 non-zero entries (20.33%)
+  Speed 50-<60: 734,089 non-zero entries (31.80%)
+  Speed 60-<70: 1,166,406 non-zero entries (50.52%)
+  Speed 70-<80: 1,663,832 non-zero entries (72.07%)
+  Speed 80-<90: 1,844,928 non-zero entries (79.91%)
+  Speed 90-<100: 1,798,587 non-zero entries (77.90%)
+  Speed 100-<110: 1,553,771 non-zero entries (67.30%)
+  Speed 110-<120: 1,169,136 non-zero entries (50.64%)
+  Speed 120-<130: 708,470 non-zero entries (30.69%)
+  Speed =>130: 530,994 non-zero entries (23.00%)
+
+2024:
+  Speed <40Kph: 333,801 non-zero entries (13.70%)
+  Speed 40-<50: 470,455 non-zero entries (19.31%)
+  Speed 50-<60: 740,399 non-zero entries (30.39%)
+  Speed 60-<70: 1,198,992 non-zero entries (49.21%)
+  Speed 70-<80: 1,745,887 non-zero entries (71.65%)
+  Speed 80-<90: 1,963,889 non-zero entries (80.60%)
+  Speed 90-<100: 1,934,333 non-zero entries (79.39%)
+  Speed 100-<110: 1,681,498 non-zero entries (69.01%)
+  Speed 110-<120: 1,271,590 non-zero entries (52.19%)
+  Speed 120-<130: 777,976 non-zero entries (31.93%)
+  Speed =>130: 585,533 non-zero entries (24.03%)
+
+2025:
+  Speed <40Kph: 288,634 non-zero entries (13.18%)
+  Speed 40-<50: 409,093 non-zero entries (18.68%)
+  Speed 50-<60: 634,987 non-zero entries (29.00%)
+  Speed 60-<70: 1,010,591 non-zero entries (46.15%)
+  Speed 70-<80: 1,489,441 non-zero entries (68.02%)
+  Speed 80-<90: 1,686,249 non-zero entries (77.01%)
+  Speed 90-<100: 1,667,091 non-zero entries (76.13%)
+  Speed 100-<110: 1,451,934 non-zero entries (66.31%)
+  Speed 110-<120: 1,103,348 non-zero entries (50.39%)
+  Speed 120-<130: 687,046 non-zero entries (31.38%)
+  Speed =>130: 530,777 non-zero entries (24.24%)
+
+2026:
+  Speed <40Kph: 88,643 non-zero entries (13.01%)
+  Speed 40-<50: 122,205 non-zero entries (17.93%)
+  Speed 50-<60: 189,904 non-zero entries (27.86%)
+  Speed 60-<70: 301,035 non-zero entries (44.17%)
+  Speed 70-<80: 452,018 non-zero entries (66.32%)
+  Speed 80-<90: 506,683 non-zero entries (74.34%)
+  Speed 90-<100: 500,312 non-zero entries (73.40%)
+  Speed 100-<110: 424,221 non-zero entries (62.24%)
+  Speed 110-<120: 316,396 non-zero entries (46.42%)
+  Speed 120-<130: 182,579 non-zero entries (26.79%)
+  Speed =>130: 132,976 non-zero entries (19.51%)
+
+================================================================================
+YEARLY CHANGES ANALYSIS
+================================================================================
+
+Row count changes:
+  2018: 91,296 rows
+  2019: 526,802 rows (change: +435,506 = +477.03%)
+  2020: 1,294,200 rows (change: +767,398 = +145.67%)
+  2021: 2,295,190 rows (change: +1,000,990 = +77.34%)
+  2022: 2,252,484 rows (change: -42,706 = -1.86%)
+  2023: 2,308,696 rows (change: +56,212 = +2.50%)
+  2024: 2,436,564 rows (change: +127,868 = +5.54%)
+  2025: 2,189,654 rows (change: -246,910 = -10.13%)
+  2026: 681,600 rows (change: -1,508,054 = -68.87%)
+
+Column changes:
+
+Data distribution comparison (first 5 vehicle columns):
+
+  Vehicle type 1:
+    2018: mean=0.98, std=2.32
+    2019: mean=1.37, std=3.51
+    2020: mean=1.04, std=4.95
+    2021: mean=0.92, std=4.14
+    2022: mean=0.84, std=3.79
+    2023: mean=0.91, std=4.07
+    2024: mean=0.88, std=3.73
+    2025: mean=0.64, std=3.08
+    2026: mean=0.26, std=1.43
+
+  Vehicle type 2:
+    2018: mean=169.77, std=166.67
+    2019: mean=131.64, std=139.33
+    2020: mean=100.51, std=124.03
+    2021: mean=91.37, std=118.39
+    2022: mean=89.45, std=114.68
+    2023: mean=97.33, std=130.91
+    2024: mean=101.35, std=126.53
+    2025: mean=105.37, std=169.28
+    2026: mean=95.64, std=128.43
+
+  Vehicle type 3:
+    2018: mean=2.96, std=4.14
+    2019: mean=3.09, std=4.27
+    2020: mean=2.68, std=4.08
+    2021: mean=2.47, std=3.93
+    2022: mean=2.40, std=3.92
+    2023: mean=2.52, std=4.85
+    2024: mean=2.56, std=4.28
+    2025: mean=2.59, std=4.40
+    2026: mean=2.00, std=3.55
+
+  Vehicle type 4:
+    2018: mean=20.42, std=20.60
+    2019: mean=20.13, std=20.98
+    2020: mean=15.26, std=19.14
+    2021: mean=14.12, std=18.55
+    2022: mean=14.69, std=22.20
+    2023: mean=14.85, std=21.59
+    2024: mean=15.13, std=20.29
+    2025: mean=14.90, std=20.31
+    2026: mean=13.34, std=19.62
+
+  Vehicle type 5:
+    2018: mean=0.22, std=0.62
+    2019: mean=0.29, std=0.95
+    2020: mean=0.23, std=1.34
+    2021: mean=0.28, std=2.31
+    2022: mean=0.30, std=2.85
+    2023: mean=0.28, std=2.73
+    2024: mean=0.34, std=3.30
+    2025: mean=0.17, std=0.76
+    2026: mean=0.12, std=0.55
+
+================================================================================
+TIME COLUMN ANALYSIS
+================================================================================
+
+2018:
+  Time column parsed as datetime
+  Date range: 2018-01-01 00:00:00 to 2018-12-31 23:00:00
+  Unique dates: 365
+
+2019:
+  Time column parsed as datetime
+  Date range: 2019-01-01 00:00:00 to 2019-12-31 23:00:00
+  Unique dates: 365
+
+2020:
+  Time column parsed as datetime
+  Date range: 2020-01-01 00:00:00 to 2020-12-31 23:00:00
+  Unique dates: 366
+
+2021:
+  Time column parsed as datetime
+  Date range: 2021-01-01 01:00:00 to 2021-12-31 23:00:00
+  Unique dates: 365
+
+2022:
+  Time column parsed as datetime
+  Date range: 2022-01-01 00:00:00 to 2022-12-31 23:00:00
+  Unique dates: 362
+
+2023:
+  Time column parsed as datetime
+  Date range: 2023-01-01 00:00:00 to 2023-12-31 23:00:00
+  Unique dates: 362
+
+2024:
+  Time column parsed as datetime
+  Date range: 2024-01-01 00:00:00 to 2024-12-31 23:00:00
+  Unique dates: 366
+
+2025:
+  Time column parsed as datetime
+  Date range: 2025-01-01 00:00:00 to 2025-12-31 23:00:00
+  Unique dates: 356
+
+2026:
+  Time column parsed as datetime
+  Date range: 2026-01-01 00:00:00 to 2026-04-30 23:00:00
+  Unique dates: 120
+
+================================================================================
+KANAL (LANE) COLUMN ANALYSIS
+================================================================================
+
+2018:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4)]
+  Count per kanal:
+    1: 31,583 rows
+    2: 31,583 rows
+    3: 14,065 rows
+    4: 14,065 rows
+
+2019:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 214,804 rows
+    2: 214,804 rows
+    3: 44,925 rows
+    4: 44,925 rows
+    5: 3,672 rows
+    6: 3,672 rows
+
+2020:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 515,234 rows
+    2: 515,234 rows
+    3: 114,301 rows
+    4: 114,301 rows
+    5: 17,565 rows
+    6: 17,565 rows
+
+2021:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 935,114 rows
+    2: 935,114 rows
+    3: 194,990 rows
+    4: 194,990 rows
+    5: 17,491 rows
+    6: 17,491 rows
+
+2022:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 912,845 rows
+    2: 912,845 rows
+    3: 196,926 rows
+    4: 196,926 rows
+    5: 16,471 rows
+    6: 16,471 rows
+
+2023:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 942,257 rows
+    2: 942,257 rows
+    3: 196,966 rows
+    4: 196,966 rows
+    5: 15,125 rows
+    6: 15,125 rows
+
+2024:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 985,192 rows
+    2: 985,192 rows
+    3: 215,526 rows
+    4: 215,526 rows
+    5: 17,564 rows
+    6: 17,564 rows
+
+2025:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 868,654 rows
+    2: 868,654 rows
+    3: 209,087 rows
+    4: 209,087 rows
+    5: 17,086 rows
+    6: 17,086 rows
+
+2026:
+  Unique kanal values: [np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6)]
+  Count per kanal:
+    1: 266,418 rows
+    2: 266,418 rows
+    3: 68,624 rows
+    4: 68,624 rows
+    5: 5,758 rows
+    6: 5,758 rows
+
+================================================================================
+ID COLUMN ANALYSIS
+================================================================================
+
+2018:
+  Unique IDs: 5
+  Total rows: 91,296
+  Duplicate IDs: 91,291
+  Sample IDs: ['1cf12' '1d86e' '31b9f' '74018' 74018]
+
+2019:
+  Unique IDs: 29
+  Total rows: 526,802
+  Duplicate IDs: 526,773
+  Sample IDs: <ArrowStringArray>
+['077db', '0cfcf', '180b3', '1cf12', '1d86e']
+Length: 5, dtype: str
+
+2020:
+  Unique IDs: 109
+  Total rows: 1,294,200
+  Duplicate IDs: 1,294,091
+  Sample IDs: <ArrowStringArray>
+['004a4', '01d10', '029a6', '04adb', '05061']
+Length: 5, dtype: str
+
+2021:
+  Unique IDs: 123
+  Total rows: 2,295,190
+  Duplicate IDs: 2,295,067
+  Sample IDs: ['004a4' '01d10' '029a6' '04adb' '05061']
+
+2022:
+  Unique IDs: 125
+  Total rows: 2,252,484
+  Duplicate IDs: 2,252,359
+  Sample IDs: ['004a4' '01d10' '029a6' '04adb' '05061']
+
+2023:
+  Unique IDs: 121
+  Total rows: 2,308,696
+  Duplicate IDs: 2,308,575
+  Sample IDs: ['004a4' '01d10' '029a6' '04adb' '05061']
+
+2024:
+  Unique IDs: 121
+  Total rows: 2,436,564
+  Duplicate IDs: 2,436,443
+  Sample IDs: ['004a4' '01d10' '029a6' '04adb' '05061']
+
+2025:
+  Unique IDs: 120
+  Total rows: 2,189,654
+  Duplicate IDs: 2,189,534
+  Sample IDs: ['004a4' '01d10' '029a6' '04adb' '05061']
+
+2026:
+  Unique IDs: 113
+  Total rows: 681,600
+  Duplicate IDs: 681,487
+  Sample IDs: <ArrowStringArray>
+['004a4', '029a6', '04adb', '05061', '077a6']
+Length: 5, dtype: str
+
+================================================================================
+SUMMARY REPORT
+================================================================================
+
+Total years: 9
+Years: 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026
+
+Total rows across all years: 14,076,486
+Total missing cells: 296,318 (0.0842%)
+
+✓ All files have the same columns
+
+Data Quality Issues:
+  - 2024 has missing data
+  - 2025 has missing data
+  - 2026 has missing data
+
+================================================================================
+ANALYSIS COMPLETE
+================================================================================

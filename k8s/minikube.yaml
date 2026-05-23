@@ -1,0 +1,270 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mlops-project
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mlops-config
+  namespace: mlops-project
+data:
+  PYTHONPATH: /app
+  MLFLOW_TRACKING_URI: http://mlflow:5000
+  PREFECT_API_URL: http://prefect:4200/api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: mlops-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -c
+            - >-
+              pip install --no-cache-dir mlflow &&
+              mkdir -p /mlflow/artifacts &&
+              mlflow server
+              --host 0.0.0.0
+              --port 5000
+              --backend-store-uri sqlite:////mlflow/mlflow.db
+              --default-artifact-root /mlflow/artifacts
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: mlflow-storage
+              mountPath: /mlflow
+      volumes:
+        - name: mlflow-storage
+          hostPath:
+            path: /mnt/mlops-project/.kube-data/mlflow
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  namespace: mlops-project
+spec:
+  type: NodePort
+  selector:
+    app: mlflow
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+      nodePort: 30500
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prefect
+  namespace: mlops-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prefect
+  template:
+    metadata:
+      labels:
+        app: prefect
+    spec:
+      containers:
+        - name: prefect
+          image: prefecthq/prefect:3-python3.12
+          imagePullPolicy: IfNotPresent
+          command: ["prefect"]
+          args: ["server", "start", "--host", "0.0.0.0", "--port", "4200"]
+          envFrom:
+            - configMapRef:
+                name: mlops-config
+          ports:
+            - containerPort: 4200
+          volumeMounts:
+            - name: prefect-storage
+              mountPath: /root/.prefect
+      volumes:
+        - name: prefect-storage
+          hostPath:
+            path: /mnt/mlops-project/.kube-data/prefect
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prefect
+  namespace: mlops-project
+spec:
+  type: NodePort
+  selector:
+    app: prefect
+  ports:
+    - name: http
+      port: 4200
+      targetPort: 4200
+      nodePort: 30420
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: mlops-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: mlops-project:local
+          imagePullPolicy: Never
+          command: ["python", "-m", "uvicorn"]
+          args: ["src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+          envFrom:
+            - configMapRef:
+                name: mlops-config
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+              readOnly: true
+            - name: models
+              mountPath: /app/models
+              readOnly: true
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: data
+          hostPath:
+            path: /mnt/mlops-project/data
+            type: Directory
+        - name: models
+          hostPath:
+            path: /mnt/mlops-project/models
+            type: Directory
+        - name: logs
+          hostPath:
+            path: /mnt/mlops-project/logs
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: mlops-project
+spec:
+  type: NodePort
+  selector:
+    app: api
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      nodePort: 30800
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  namespace: mlops-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashboard
+  template:
+    metadata:
+      labels:
+        app: dashboard
+    spec:
+      containers:
+        - name: dashboard
+          image: mlops-project:local
+          imagePullPolicy: Never
+          command: ["streamlit"]
+          args:
+            - run
+            - src/dashboard/app.py
+            - --server.port=8501
+            - --server.address=0.0.0.0
+          envFrom:
+            - configMapRef:
+                name: mlops-config
+          ports:
+            - containerPort: 8501
+          readinessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: 8501
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: 8501
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+              readOnly: true
+            - name: models
+              mountPath: /app/models
+              readOnly: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /mnt/mlops-project/data
+            type: Directory
+        - name: models
+          hostPath:
+            path: /mnt/mlops-project/models
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: mlops-project
+spec:
+  type: NodePort
+  selector:
+    app: dashboard
+  ports:
+    - name: http
+      port: 8501
+      targetPort: 8501
+      nodePort: 30851

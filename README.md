@@ -6,7 +6,9 @@ An end-to-end MLOps pipeline for detecting traffic anomalies from Estonian censu
 
 ### Prerequisites
 - Python 3.12+
-- UV package manager (recommended)
+- Docker and Docker Compose
+- DVC access to the configured Backblaze B2/S3 remote
+- Minikube and kubectl, if running on Kubernetes
 
 ### Installation
 
@@ -15,12 +17,45 @@ An end-to-end MLOps pipeline for detecting traffic anomalies from Estonian censu
 git clone https://github.com/your-repo/mlops-project.git
 cd mlops-project
 
-# Install dependencies
-uv sync
+# Create and activate a virtual environment
+python3.12 -m venv .venv
+source .venv/bin/activate
 
-# Or with pip
-pip install -e .
+# Install dependencies
+pip install -r requirements.txt
 ```
+
+### Restore Data And Models
+
+Configure DVC credentials locally. Do not commit `.dvc/config.local`.
+
+```bash
+dvc remote modify --local dvstore access_key_id YOUR_BACKBLAZE_KEY_ID
+dvc remote modify --local dvstore secret_access_key YOUR_BACKBLAZE_APPLICATION_KEY
+dvc pull
+dvc status
+```
+
+Expected status:
+
+```text
+Data and pipelines are up to date.
+```
+
+This restores the raw CSVs, processed parquet file, and trained model needed by the services.
+
+### Fastest Local Run
+
+```bash
+docker compose up -d --build
+```
+
+Open:
+
+- API: `http://localhost:8000`
+- Dashboard: `http://localhost:8501`
+- MLflow: `http://localhost:5000`
+- Prefect: `http://localhost:4200`
 
 ## 📁 Project Structure
 
@@ -91,45 +126,45 @@ mlops-project/
 
 ```bash
 # Preprocess all data and save to parquet
-uv run python main.py preprocess
+python main.py preprocess
 ```
 
 ### Model Training
 
 ```bash
 # Train the anomaly detection model
-uv run python main.py train
+python main.py train
 ```
 
 ### Run API Service
 
 ```bash
 # Start FastAPI server
-uv run python main.py predict
+python main.py predict
 
 # Or with uvicorn directly
-uv run uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+uvicorn src.api.app:app --host 0.0.0.0 --port 8000
 ```
 
 ### Run Dashboard
 
 ```bash
 # Start Streamlit dashboard
-uv run streamlit run src/dashboard/app.py
+streamlit run src/dashboard/app.py
 ```
 
 ### Monitor Data Drift
 
 ```bash
 # Check for data drift
-uv run python main.py monitor
+python main.py monitor
 ```
 
 ### Retrain Model
 
 ```bash
 # Retrain with new data
-uv run python main.py retrain
+python main.py retrain
 ```
 
 ## 🔧 Configuration
@@ -158,13 +193,13 @@ MODEL_DIR=./models
 
 ```bash
 # Build images
-docker-compose build
+docker compose build
 
 # Start all services
-docker-compose up -d
+docker compose up -d
 
 # Stop services
-docker-compose down
+docker compose down
 ```
 
 ### Services
@@ -173,6 +208,101 @@ docker-compose down
 - **Dashboard**: `http://localhost:8501` - Streamlit dashboard
 - **MLflow**: `http://localhost:5000` - Model tracking
 - **Prefect**: `http://localhost:4200` - Workflow orchestration
+
+### Useful Commands
+
+```bash
+docker compose ps
+docker compose logs -f
+docker compose logs -f api
+docker compose logs -f dashboard
+docker compose logs -f mlflow
+```
+
+To train locally and log to the Docker MLflow server:
+
+```bash
+source .venv/bin/activate
+export MLFLOW_TRACKING_URI=http://localhost:5000
+python main.py train
+```
+
+## ☸️ Minikube Deployment
+
+The Kubernetes manifests are in `k8s/minikube.yaml`. The app image does not bake in the local data or model files. Instead, Minikube mounts this project directory and Kubernetes mounts `data/` and `models/` into the pods.
+
+Start Minikube:
+
+```bash
+minikube start
+```
+
+In a separate terminal, keep the project mount running:
+
+```bash
+cd /Users/tanelpastarus/Projects/MLOps/mlops-project
+mkdir -p logs .kube-data/mlflow .kube-data/prefect
+minikube mount "$PWD:/mnt/mlops-project"
+```
+
+In the main terminal, build the app image inside Minikube and deploy:
+
+```bash
+cd /Users/tanelpastarus/Projects/MLOps/mlops-project
+eval "$(minikube docker-env)"
+docker build -t mlops-project:local .
+kubectl apply -f k8s/minikube.yaml
+kubectl get pods -n mlops-project
+```
+
+Open services:
+
+```bash
+minikube service api -n mlops-project
+minikube service dashboard -n mlops-project
+minikube service mlflow -n mlops-project
+minikube service prefect -n mlops-project
+```
+
+Useful Kubernetes commands:
+
+```bash
+kubectl get all -n mlops-project
+kubectl logs -f deployment/api -n mlops-project
+kubectl logs -f deployment/dashboard -n mlops-project
+kubectl logs -f deployment/mlflow -n mlops-project
+kubectl describe pod -l app=api -n mlops-project
+```
+
+After code changes, rebuild and restart the API/dashboard deployments:
+
+```bash
+eval "$(minikube docker-env)"
+docker build -t mlops-project:local .
+kubectl rollout restart deployment/api deployment/dashboard -n mlops-project
+```
+
+To clean up:
+
+```bash
+kubectl delete -f k8s/minikube.yaml
+minikube stop
+```
+
+If API or dashboard stays in `ContainerCreating`, make sure the `minikube mount` terminal is still running and verify:
+
+```bash
+minikube ssh -- "ls -lah /mnt/mlops-project/data /mnt/mlops-project/models"
+```
+
+If API or dashboard shows `ErrImageNeverPull`, rebuild the image inside Minikube:
+
+```bash
+eval "$(minikube docker-env)"
+docker build -t mlops-project:local .
+kubectl delete pod -n mlops-project -l app=api
+kubectl delete pod -n mlops-project -l app=dashboard
+```
 
 ## 📊 Data Analysis
 
@@ -280,8 +410,12 @@ The Streamlit dashboard provides:
 # Initialize DVC
 dvc init
 
-# Add data to DVC
-dvc add data/ll_2025.csv
+# Configure credentials locally
+dvc remote modify --local dvstore access_key_id YOUR_BACKBLAZE_KEY_ID
+dvc remote modify --local dvstore secret_access_key YOUR_BACKBLAZE_APPLICATION_KEY
+
+# Pull data and models
+dvc pull
 
 # Run pipeline
 dvc repro
@@ -329,10 +463,10 @@ drift_report = detector.detect_drift(reference_data, current_data, features)
 
 ```bash
 # Run tests
-uv run pytest
+pytest
 
 # With coverage
-uv run pytest --cov=src
+pytest --cov=src
 ```
 
 ## 📚 Data Sources

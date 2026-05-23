@@ -39,12 +39,20 @@ ENV/
 *.csv
 *.xlsx
 *.json
-/data/
+/data/**
+!/data/
+!/data/**/
+!/data/**/*.dvc
+!/data/**/.gitignore
 
 # Models
 *.pkl
 *.joblib
-/models/
+/models/**
+!/models/
+!/models/**/
+!/models/**/*.dvc
+!/models/**/.gitignore
 
 # Reports
 *.html

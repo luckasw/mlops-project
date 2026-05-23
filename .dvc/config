@@ -1,0 +1,5 @@
+[core]
+    remote = dvstore
+['remote "dvstore"']
+    url = s3://mlops-project/dvc
+    endpointurl = https://s3.eu-central-003.backblazeb2.com

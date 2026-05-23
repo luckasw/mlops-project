@@ -1,0 +1,48 @@
+# Local Python environments and package/build artifacts
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Local tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.nox/
+htmlcov/
+.coverage
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Runtime logs and local service state
+logs/
+*.log
+mlflow.db
+mlflow-artifacts/
+.prefect/
+prefect/*.db
+prefect/*.db-shm
+prefect/*.db-wal
+prefect/memo_store.toml
+
+# Local app configuration
+.env
+.env.local
+.env.*.local
+
+# Docker overrides
+docker-compose.override.yml

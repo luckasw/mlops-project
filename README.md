@@ -2,7 +2,7 @@
 
 An end-to-end MLOps pipeline for detecting traffic anomalies from Estonian census data, processing hourly measurements of volume, speed, and vehicle types, enabling proactive traffic management through automated model deployment and monitoring.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.12+
@@ -10,54 +10,8 @@ An end-to-end MLOps pipeline for detecting traffic anomalies from Estonian censu
 - DVC access to the configured Backblaze B2/S3 remote
 - Minikube and kubectl, if running on Kubernetes
 
-### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/your-repo/mlops-project.git
-cd mlops-project
-
-# Create and activate a virtual environment
-python3.12 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Restore Data And Models
-
-Configure DVC credentials locally. Do not commit `.dvc/config.local`.
-
-```bash
-dvc remote modify --local dvstore access_key_id YOUR_BACKBLAZE_KEY_ID
-dvc remote modify --local dvstore secret_access_key YOUR_BACKBLAZE_APPLICATION_KEY
-dvc pull
-dvc status
-```
-
-Expected status:
-
-```text
-Data and pipelines are up to date.
-```
-
-This restores the raw CSVs, processed parquet file, and trained model needed by the services.
-
-### Fastest Local Run
-
-```bash
-docker compose up -d --build
-```
-
-Open:
-
-- API: `http://localhost:8000`
-- Dashboard: `http://localhost:8501`
-- MLflow: `http://localhost:5000`
-- Prefect: `http://localhost:4200`
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 mlops-project/
@@ -100,10 +54,10 @@ mlops-project/
 └── README.md             # This file
 ```
 
-## 🎯 Features
+## Features
 
 ### Data Pipeline
-- **Ingestion**: Load hourly traffic data from CSV files (2018-2026)
+- **Ingestion**: Load hourly traffic data from CSV files
 - **Preprocessing**: Handle missing speed data, calculate derived features
 - **Feature Engineering**: Extract temporal and traffic features
 
@@ -123,74 +77,8 @@ mlops-project/
 - **FastAPI**: REST API for real-time predictions
 - **Streamlit + Folium**: Interactive dashboard with map visualization
 
-## 🚗 Usage
 
-### Data Preprocessing
-
-```bash
-# Preprocess all data and save to parquet
-python main.py preprocess
-```
-
-### Model Training
-
-```bash
-# Train the anomaly detection model
-python main.py train
-```
-
-### Run API Service
-
-```bash
-# Start FastAPI server
-python main.py predict
-
-# Or with uvicorn directly
-uvicorn src.api.app:app --host 0.0.0.0 --port 8000
-```
-
-### Run Dashboard
-
-```bash
-# Start Streamlit dashboard
-streamlit run src/dashboard/app.py
-```
-
-### Monitor Data Drift
-
-```bash
-# Check for data drift
-python main.py monitor
-```
-
-### Retrain Model
-
-```bash
-# Retrain with new data
-python main.py retrain
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file:
-
-```bash
-# MLflow
-MLFLOW_TRACKING_URI=http://localhost:5000
-MLFLOW_S3_ENDPOINT_URL=
-MLFLOW_S3_BUCKET=
-
-# Prefect
-PREFECT_API_URL=http://localhost:4200/api
-
-# Data
-DATA_DIR=./data
-MODEL_DIR=./models
-```
-
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build and Run
 
@@ -212,25 +100,8 @@ docker compose down
 - **MLflow**: `http://localhost:5000` - Model tracking
 - **Prefect**: `http://localhost:4200` - Workflow orchestration
 
-### Useful Commands
 
-```bash
-docker compose ps
-docker compose logs -f
-docker compose logs -f api
-docker compose logs -f dashboard
-docker compose logs -f mlflow
-```
-
-To train locally and log to the Docker MLflow server:
-
-```bash
-source .venv/bin/activate
-export MLFLOW_TRACKING_URI=http://localhost:5000
-python main.py train
-```
-
-## ☸️ Minikube Deployment
+## Minikube Deployment
 
 The Kubernetes manifests are in `deploy/k8s/minikube.yaml`. The app image does not bake in the local data or model files. Instead, Minikube mounts this project directory and Kubernetes mounts `data/` and `models/` into the pods.
 
@@ -243,7 +114,6 @@ minikube start
 In a separate terminal, keep the project mount running:
 
 ```bash
-cd /Users/tanelpastarus/Projects/MLOps/mlops-project
 mkdir -p logs .kube-data/mlflow .kube-data/prefect
 minikube mount "$PWD:/mnt/mlops-project"
 ```
@@ -251,7 +121,6 @@ minikube mount "$PWD:/mnt/mlops-project"
 In the main terminal, build the app image inside Minikube and deploy:
 
 ```bash
-cd /Users/tanelpastarus/Projects/MLOps/mlops-project
 eval "$(minikube docker-env)"
 docker build -t mlops-project:local .
 kubectl apply -f deploy/k8s/minikube.yaml
@@ -267,47 +136,7 @@ minikube service mlflow -n mlops-project
 minikube service prefect -n mlops-project
 ```
 
-Useful Kubernetes commands:
-
-```bash
-kubectl get all -n mlops-project
-kubectl logs -f deployment/api -n mlops-project
-kubectl logs -f deployment/dashboard -n mlops-project
-kubectl logs -f deployment/mlflow -n mlops-project
-kubectl describe pod -l app=api -n mlops-project
-```
-
-After code changes, rebuild and restart the API/dashboard deployments:
-
-```bash
-eval "$(minikube docker-env)"
-docker build -t mlops-project:local .
-kubectl rollout restart deployment/api deployment/dashboard -n mlops-project
-```
-
-To clean up:
-
-```bash
-kubectl delete -f deploy/k8s/minikube.yaml
-minikube stop
-```
-
-If API or dashboard stays in `ContainerCreating`, make sure the `minikube mount` terminal is still running and verify:
-
-```bash
-minikube ssh -- "ls -lah /mnt/mlops-project/data /mnt/mlops-project/models"
-```
-
-If API or dashboard shows `ErrImageNeverPull`, rebuild the image inside Minikube:
-
-```bash
-eval "$(minikube docker-env)"
-docker build -t mlops-project:local .
-kubectl delete pod -n mlops-project -l app=api
-kubectl delete pod -n mlops-project -l app=dashboard
-```
-
-## 📊 Data Analysis
+## Data Analysis
 
 ### Dataset Overview
 - **Source**: Estonian Transport Administration (Liiklusloenduse andmed)
@@ -323,9 +152,8 @@ kubectl delete pod -n mlops-project -l app=dashboard
 ### Data Quality
 - Missing speed data for stations: `25d51`, `0e481`, `ff2e7`, `fde61`
 - Speed data imputed using historical medians per station and hour
-- Vehicle type counts sum to speed range counts (validation passed for 2018-2023)
 
-## 🎨 Feature Engineering
+## Feature Engineering
 
 ### Core Features
 
@@ -345,7 +173,7 @@ kubectl delete pod -n mlops-project -l app=dashboard
 - Fixed: New Year's Day (Jan 1), Independence Day (Feb 24), May Day (May 1), Christmas (Dec 24-26)
 - Variable: Easter Sunday and Monday (calculated per year)
 
-## 🔍 API Endpoints
+## API Endpoints
 
 ### Health Check
 ```
@@ -397,7 +225,7 @@ Content-Type: application/json
 GET /features
 ```
 
-## 📈 Dashboard
+## Dashboard
 
 The Streamlit dashboard provides:
 - Interactive data exploration
@@ -406,90 +234,20 @@ The Streamlit dashboard provides:
 - Station map with Folium
 - Filtering by year, station, and time period
 
-## 🔄 MLOps Pipeline
 
-### Data Versioning (DVC)
+## Data Versioning (DVC)
 ```bash
-# Initialize DVC
-dvc init
-
 # Configure credentials locally
 dvc remote modify --local dvstore access_key_id YOUR_BACKBLAZE_KEY_ID
 dvc remote modify --local dvstore secret_access_key YOUR_BACKBLAZE_APPLICATION_KEY
-
-# Pull data and models
-dvc pull
-
-# Run pipeline
-dvc repro
-
-# Push to remote
-dvc push
 ```
 
-### Experiment Tracking (MLflow)
-```python
-import mlflow
-
-mlflow.set_experiment("traffic_anomaly_detection")
-
-with mlflow.start_run():
-    mlflow.log_param("n_estimators", 100)
-    mlflow.log_metric("anomaly_rate", 0.01)
-    mlflow.sklearn.log_model(model, "model")
-```
-
-### Workflow Orchestration (Prefect)
-```python
-from prefect import flow, task
-
-@flow(name="hourly_retraining")
-def retrain_flow():
-    # Load new data
-    # Retrain model
-    # Save and deploy
-    pass
-
-# Schedule hourly
-retrain_flow.schedule(cron="0 * * * *")
-```
-
-### Drift Detection (Evidently AI)
-```python
-from src.monitoring.drift import TrafficDriftDetector
-
-detector = TrafficDriftDetector()
-drift_report = detector.detect_drift(reference_data, current_data, features)
-```
-
-## 🧪 Testing
-
-```bash
-# Run tests
-pytest
-
-# With coverage
-pytest --cov=src
-```
-
-## 📚 Data Sources
+## Data Sources
 
 - **Estonian Open Data Portal**: [Liiklusloenduse andmed](https://andmed.eesti.ee/datasets/liiklusloenduse-andmed)
-- **Transport Administration**: [Liiklussagedus](https://transpordiamet.ee/liiklussagedus)
+- **Transport Administration**: [Liiklusloendusseadmed](https://andmed.eesti.ee/datasets/liiklusloendusseadmed)
 
-## 👥 Team
+## Team
 
 - Albert Wihler
 - Tanel Pastarus
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a pull request

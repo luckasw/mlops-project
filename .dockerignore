@@ -20,4 +20,4 @@ reports/
 .env
 .env.*
 .DS_Store
-project.pdf
+docs/project.pdf

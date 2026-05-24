@@ -61,6 +61,10 @@ Open:
 
 ```
 mlops-project/
+├── deploy/                  # Deployment manifests and deployment docs
+│   └── k8s/                 # Minikube Kubernetes manifests
+├── docs/                    # Project notes, reports, and source data docs
+├── scripts/                 # One-off utility and training scripts
 ├── data/                    # Raw and processed data
 │   ├── raw/                # Raw CSV files
 │   ├── processed/          # Processed parquet files
@@ -87,7 +91,6 @@ mlops-project/
 │   └── dashboard/          # Streamlit dashboard
 │       └── app.py          # Dashboard application
 ├── tests/                  # Tests
-├── configs/                # Configuration files
 ├── .dvc/                  # DVC configuration
 ├── docker-compose.yml     # Docker Compose configuration
 ├── Dockerfile             # Docker configuration
@@ -229,7 +232,7 @@ python main.py train
 
 ## ☸️ Minikube Deployment
 
-The Kubernetes manifests are in `k8s/minikube.yaml`. The app image does not bake in the local data or model files. Instead, Minikube mounts this project directory and Kubernetes mounts `data/` and `models/` into the pods.
+The Kubernetes manifests are in `deploy/k8s/minikube.yaml`. The app image does not bake in the local data or model files. Instead, Minikube mounts this project directory and Kubernetes mounts `data/` and `models/` into the pods.
 
 Start Minikube:
 
@@ -251,7 +254,7 @@ In the main terminal, build the app image inside Minikube and deploy:
 cd /Users/tanelpastarus/Projects/MLOps/mlops-project
 eval "$(minikube docker-env)"
 docker build -t mlops-project:local .
-kubectl apply -f k8s/minikube.yaml
+kubectl apply -f deploy/k8s/minikube.yaml
 kubectl get pods -n mlops-project
 ```
 
@@ -285,7 +288,7 @@ kubectl rollout restart deployment/api deployment/dashboard -n mlops-project
 To clean up:
 
 ```bash
-kubectl delete -f k8s/minikube.yaml
+kubectl delete -f deploy/k8s/minikube.yaml
 minikube stop
 ```
 

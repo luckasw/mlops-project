@@ -133,7 +133,34 @@ Open services:
 minikube service api -n mlops-project
 minikube service dashboard -n mlops-project
 minikube service mlflow -n mlops-project
-minikube service prefect -n mlops-project
+```
+
+For Prefect, use port forwarding so the browser can reach the API URL that the Prefect UI uses:
+
+```bash
+kubectl port-forward svc/prefect -n mlops-project 4200:4200
+```
+
+Then open `http://localhost:4200`.
+
+To create Prefect and MLflow runs from local training, keep Prefect port-forwarded and use the Minikube MLflow service URL.
+Use the printed URL as `MLFLOW_TRACKING_URI`, then run training:
+
+```bash
+source .venv/bin/activate
+export PREFECT_API_URL=http://localhost:4200/api
+export MLFLOW_TRACKING_URI=<MLFLOW_URL_FROM_MINIKUBE_SERVICE>
+python main.py train
+```
+
+If MLflow fails with `Read-only file system: '/mlflow'`, reset the local Minikube MLflow store after applying the current manifest. Older MLflow experiments may still contain the old container-local artifact path:
+
+```bash
+kubectl scale deployment/mlflow -n mlops-project --replicas=0
+rm -rf .kube-data/mlflow/*
+kubectl apply -f deploy/k8s/minikube.yaml
+kubectl scale deployment/mlflow -n mlops-project --replicas=1
+kubectl rollout status deployment/mlflow -n mlops-project
 ```
 
 ## Data Analysis

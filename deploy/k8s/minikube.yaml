@@ -12,6 +12,7 @@ data:
   PYTHONPATH: /app
   MLFLOW_TRACKING_URI: http://mlflow:5000
   PREFECT_API_URL: http://prefect:4200/api
+  PREFECT_UI_API_URL: http://localhost:4200/api
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,7 +43,8 @@ spec:
               --host 0.0.0.0
               --port 5000
               --backend-store-uri sqlite:////mlflow/mlflow.db
-              --default-artifact-root /mlflow/artifacts
+              --serve-artifacts
+              --artifacts-destination /mlflow/artifacts
           ports:
             - containerPort: 5000
           volumeMounts:

@@ -63,7 +63,7 @@ mlops-project/
 
 ### Anomaly Detection
 - **Model**: Isolation Forest for multivariate anomaly detection
-- **Features**: 9 engineered features including traffic volume, speed, vehicle composition, temporal patterns
+- **Features**: 8 engineered features including traffic volume, speed, vehicle composition, temporal patterns
 - **Training Strategy**: Incremental learning with 2018-2024 for training, 2025 for validation, 2026 for testing
 
 ### MLOps Components
@@ -167,7 +167,6 @@ minikube service prefect -n mlops-project
 | `is_weekend` | Weekend flag | Boolean |
 | `is_holiday` | Estonian holiday flag | Boolean |
 | `rolling_avg_24h` | 24-hour moving average of traffic volume | Numerical |
-| `lane_ratio` | Ratio of lane volume to total station volume | Numerical |
 
 ### Estonian Holidays
 - Fixed: New Year's Day (Jan 1), Independence Day (Feb 24), May Day (May 1), Christmas (Dec 24-26)
@@ -193,8 +192,7 @@ Content-Type: application/json
   "day_of_week": 2,
   "is_weekend": false,
   "is_holiday": false,
-  "rolling_avg_24h": 145,
-  "lane_ratio": 0.5
+  "rolling_avg_24h": 145
 }
 ```
 
@@ -213,8 +211,7 @@ Content-Type: application/json
       "day_of_week": 2,
       "is_weekend": false,
       "is_holiday": false,
-      "rolling_avg_24h": 145,
-      "lane_ratio": 0.5
+      "rolling_avg_24h": 145
     }
   ]
 }

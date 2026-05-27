@@ -35,7 +35,6 @@ class TrafficFeatureEngineer:
         "is_weekend",
         "is_holiday",
         "rolling_avg_24h",
-        "lane_ratio",
     ]
 
     def __init__(self):
@@ -61,21 +60,6 @@ class TrafficFeatureEngineer:
         df["rolling_avg_24h"] = df.groupby(group_cols)["total_vehicles"].transform(
             lambda x: x.rolling(window=24, min_periods=1).mean()
         )
-
-        return df
-
-    def _calculate_lane_ratio(self, df: pd.DataFrame, id_col: str = "id") -> pd.DataFrame:
-        """Calculate each lane's share of station traffic for the timestamp."""
-        if "lane_ratio" in df.columns:
-            return df
-
-        if "kanal" in df.columns and "aeg" in df.columns:
-            station_total = df.groupby([id_col, "aeg"])["total_vehicles"].transform("sum")
-            df["lane_ratio"] = np.where(
-                station_total > 0, df["total_vehicles"] / station_total, 0.0
-            )
-        else:
-            df["lane_ratio"] = 1.0
 
         return df
 
@@ -169,9 +153,6 @@ class TrafficFeatureEngineer:
 
         # Calculate rolling average
         df = self._calculate_rolling_avg(df)
-
-        # Calculate lane share within each station and timestamp
-        df = self._calculate_lane_ratio(df)
 
         # Impute missing values
         df = self._impute_missing_values(df)

@@ -1,4 +1,4 @@
-# Real-Time Traffic Anomaly Detection with MLOps
+# Traffic Anomaly Detection with MLOps
 
 ## Abstract
 An end-to-end MLOps pipeline that detects traffic anomalies from Estonian census data by processing hourly measurements of volume, speed, and vehicle types, enabling proactive traffic management through automated model deployment and monitoring.
@@ -47,8 +47,7 @@ features = {
     "day_of_week": extract_dow(aeg),                      # Day of week
     "is_weekend": day_of_week in [5, 6],                  # Weekend flag
     "is_holiday": check_estonian_holidays(aeg),           # Holiday flag
-    "rolling_avg_24h": mean(total_vehicles, window=24h), # 24h moving average
-    "lane_ratio": kanal_volume / id_total_volume         # Per-lane imbalance
+    "rolling_avg_24h": mean(total_vehicles, window=24h)  # 24h moving average
 }
 
 ## Model Architecture
@@ -77,7 +76,7 @@ The system uses **Isolation Forest** from Scikit-learn, an unsupervised anomaly 
 
 ### Training Data
 - **Input**: 11,205,232 rows (2018-2024)
-- **Features**: 9 engineered features
+- **Features**: 8 engineered features
 - **Training Time**: ~30-60 seconds
 - **Model Size**: ~1.5 MB
 
@@ -142,7 +141,6 @@ The Isolation Forest doesn't provide direct feature importance, but based on dat
 | `is_weekend` | Low | Captured by day_of_week |
 | `is_holiday` | Low | Learned from historical holiday patterns |
 | `rolling_avg_24h` | High | Deviations from 24-hour trends are anomalous |
-| `lane_ratio` | Medium | Unusual lane distribution patterns |
 
 ## Example Anomalies
 

@@ -74,7 +74,6 @@ def monitor():
         "is_weekend",
         "is_holiday",
         "rolling_avg_24h",
-        "lane_ratio",
     ]
 
     # Detect drift

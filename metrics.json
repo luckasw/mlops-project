@@ -1,10 +1,10 @@
 {
   "timestamp": "2026-05-23T16:19:06.213167",
   "report_path": "reports/drift/drift_report_20260523_161906.html",
-  "n_features": 9,
+  "n_features": 8,
   "n_drifted_features": 2,
   "max_drift_score": 0.13809498350968014,
-  "drift_share": 0.2222222222222222,
+  "drift_share": 0.25,
   "feature_drift_scores": {
     "total_vehicles": 0.07566075428200772,
     "avg_speed": 0.054291617323576034,
@@ -13,7 +13,6 @@
     "day_of_week": 0.004327708309928599,
     "is_weekend": 0.0006984628484326285,
     "is_holiday": 1.6340686306101586e-06,
-    "rolling_avg_24h": 0.12875652760935627,
-    "lane_ratio": 0.06730522481835094
+    "rolling_avg_24h": 0.12875652760935627
   }
 }

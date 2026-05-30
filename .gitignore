@@ -72,6 +72,14 @@ features.txt
 # Prefect
 .prefect/
 
+# Local Kubernetes persistent data
+/.kube-data/**
+!/.kube-data/
+!/.kube-data/mlflow/
+!/.kube-data/prefect/
+!/.kube-data/mlflow/.gitkeep
+!/.kube-data/prefect/.gitkeep
+
 # Streamlit
 .streamlit/
 

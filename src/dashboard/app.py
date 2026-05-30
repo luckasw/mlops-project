@@ -11,26 +11,67 @@ import streamlit as st
 class TrafficDashboard:
     """Streamlit dashboard for visualizing traffic anomalies."""
 
+    MAX_DISPLAY_ROWS = 200_000
+
     def __init__(self):
         """Initialize the dashboard."""
         self.model = None
         self.data = None
         self.anomalies = None
 
-    def load_data(self, years: list[int]) -> pd.DataFrame:
+    def load_data(self, years: list[int], stations: list[str] | None = None) -> pd.DataFrame:
         """Load traffic data for specified years."""
-        from src.data.loader import TrafficDataLoader
-        from src.data.preprocessor import TrafficDataPreprocessor
-        from src.features.engineer import TrafficFeatureEngineer
+        processed_path = Path("data/processed/traffic_data_processed.parquet")
+        feature_cols = [
+            "id",
+            "aeg",
+            "year",
+            "total_vehicles",
+            "avg_speed",
+            "pct_heavy_vehicles",
+            "hour",
+            "day_of_week",
+            "is_weekend",
+            "is_holiday",
+            "rolling_avg_24h",
+            "lane_ratio",
+        ]
 
-        loader = TrafficDataLoader()
-        df = loader.load_years(years)
+        if processed_path.exists():
+            filters = [("year", "in", years)]
+            if stations:
+                filters.append(("id", "in", stations))
 
-        preprocessor = TrafficDataPreprocessor(impute_speed=True)
-        df = preprocessor.preprocess(df)
+            try:
+                df = pd.read_parquet(
+                    processed_path,
+                    columns=feature_cols,
+                    filters=filters,
+                    engine="pyarrow",
+                )
+            except Exception:
+                df = pd.read_parquet(processed_path, columns=feature_cols, engine="pyarrow")
+                df = df[df["year"].isin(years)]
+                if stations:
+                    df = df[df["id"].isin(stations)]
+        else:
+            from src.data.loader import TrafficDataLoader
+            from src.data.preprocessor import TrafficDataPreprocessor
+            from src.features.engineer import TrafficFeatureEngineer
 
-        engineer = TrafficFeatureEngineer()
-        df = engineer.engineer_features(df)
+            loader = TrafficDataLoader()
+            df = loader.load_years(years)
+            if stations:
+                df = df[df["id"].isin(stations)]
+
+            preprocessor = TrafficDataPreprocessor(impute_speed=True)
+            df = preprocessor.preprocess(df)
+
+            engineer = TrafficFeatureEngineer()
+            df = engineer.engineer_features(df)
+
+        if len(df) > self.MAX_DISPLAY_ROWS:
+            df = df.sample(self.MAX_DISPLAY_ROWS, random_state=42).sort_values("aeg")
 
         return df
 
@@ -139,16 +180,12 @@ class TrafficDashboard:
         # Main content
         if selected_years:
             with st.spinner("Loading data..."):
-                self.data = self.load_data(selected_years)
+                self.data = self.load_data(selected_years, selected_stations)
 
             if self.data is not None:
                 st.subheader(f"Data Overview")
                 st.write(f"Total rows: {len(self.data):,}")
                 st.write(f"Date range: {self.data['aeg'].min()} to {self.data['aeg'].max()}")
-
-                # Filter by station
-                if selected_stations:
-                    self.data = self.data[self.data["id"].isin(selected_stations)]
 
                 # Auto-detect anomalies if model is loaded
                 if self.model and self.data is not None:
@@ -189,7 +226,19 @@ class TrafficDashboard:
     def _get_all_stations(self, years: list[int]) -> list[str]:
         """Get list of all station IDs for selected years."""
         try:
-            df = self.load_data(years[:1])  # Load first year to get stations
+            processed_path = Path("data/processed/traffic_data_processed.parquet")
+            if processed_path.exists():
+                df = pd.read_parquet(
+                    processed_path,
+                    columns=["id", "year"],
+                    filters=[("year", "in", years)],
+                    engine="pyarrow",
+                )
+            else:
+                from src.data.loader import TrafficDataLoader
+
+                loader = TrafficDataLoader()
+                df = loader.load_years(years[:1])[["id"]]
             return sorted(df["id"].unique().tolist())
         except Exception:
             return []
